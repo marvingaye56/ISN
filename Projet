@@ -1,0 +1,137 @@
+<canvas id="id_canvas" width="400" height="400"></canvas>
+
+<script>
+
+window.onload=function() { // chargement de la fenetre = programme principal
+
+    canvas=document.getElementById("id_canvas");
+
+    contexte=canvas.getContext("2d");
+
+    document.addEventListener("keydown",keyPush); // permet de détecter la présence d'une pression sur une touche directionelle 
+
+    setInterval(game,1000/15); // rafraichissement écran 15 fois par seconde, détermine en soi la vitesse du serpent 
+
+}
+
+position_serpent_x=position_serpent_y=10; //initialisation position du serpent au lancement du jeu
+
+gs=tc=20; //taille de la matrice (zone de jeu)
+
+position_pomme_x=position_pomme_y=15; //initialisation position de la pomme au lancement du jeu
+
+xv=yv=0;  //incrémentation du déplacement en x et y (+1 ou -1)
+
+trail=[];
+
+tail = 5; //initialisation longueur du serpent
+
+function game() { // fonction qui affiche le serpent et la pomme
+
+ 
+
+                /* position_serpent_x = position_serpent_x + xv;*/
+
+                position_serpent_x+=xv; //déplacement du serpent en x en fonction valeurs retournées quand touche appuyée
+
+                position_serpent_y+=yv; //déplacement du serpent en y en fonction valeurs retournées quand touche appuyée
+
+    if(position_serpent_x<0) { //si position serpent x négative on repart à l'opposé càd si complètement à gauche il passe à droite
+
+        position_serpent_x=tc-1;
+
+    }
+
+    if(position_serpent_x>tc-1) { //si position serpent x supérieure à la taille de la matrice on repart à l'opposé càd si complètement à droite il passe à gauche
+
+        position_serpent_x= 0;
+
+    }
+
+    if(position_serpent_y<0) { //si position serpent y négative on repart à l'opposé càd si complètement en haut il passe en bas
+
+        position_serpent_y=tc-1;
+
+    }
+
+    if(position_serpent_y>tc-1) {//si position serpent y supérieure à la taille de la matrice on repart à l'opposé càd si complètement en bas il passe en haut
+
+        position_serpent_y= 0;
+
+    }
+
+                contexte.fillStyle="black"; // affichera la zone de jeu en noir
+
+    contexte.fillRect(0,0,canvas.width,canvas.height); // affiche la zone de jeu à partir de la position 0 avec les dimensions du canvas
+
+    contexte.fillStyle="lime"; // affichera le serpent en couleure "citron vert"
+
+    for(var i=0; i < trail.length; i++) {
+
+        contexte.fillRect(trail[i].x*gs, trail[i].y*gs, gs-2, gs-2); // affiche les carrés qui constituent le serpent
+
+        if(trail[i].x == position_serpent_x && trail[i].y == position_serpent_y) {
+
+            tail = 5; // longueur du serpent
+
+        }
+
+    }
+
+    trail.push({x:position_serpent_x,y:position_serpent_y});
+
+    while(trail.length>tail) {
+
+    trail.shift();
+
+    }
+
+    if(position_pomme_x==position_serpent_x && position_pomme_y==position_serpent_y) { // quandd le serpent a les mêmes coordonnées que la pomme, on recalcule une position aléatoire de la pomme
+
+        tail++;
+
+        position_pomme_x=Math.floor(Math.random()*tc);
+
+        position_pomme_y=Math.floor(Math.random()*tc);
+
+    }
+
+    contexte.fillStyle="red"; // couleur de la pomme
+
+    contexte.fillRect(position_pomme_x*gs,position_pomme_y*gs,gs-2,gs-2); // dessine la pomme
+
+}
+
+function keyPush(evt) { // fonction qui gère les appuis sur les touches flèches
+
+    switch(evt.keyCode) {
+
+        case 37:
+
+            xv=-1;yv=0;
+
+            break;
+
+        case 38:
+
+            xv=0;yv=-1;
+
+            break;
+
+        case 39:
+
+            xv=1;yv=0;
+
+            break;
+
+        case 40:
+
+            xv=0;yv=1;
+
+            break;
+
+    }
+
+}
+
+</script>
